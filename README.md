@@ -39,6 +39,5 @@ Steps to run Fat Jar
 -	Step 3: Run the Container : `docker run -p 8080:8080 --name dockerLayeredTutorial java-docker-layered:v1`
 
 ## Phase 3 : Orchestration with Docker Compose
--	Step 1: Build the JAR using Gradle: ./gradlew clean bootJar
--	Step 2: Build the Docker Image: docker build -t java-docker-layred:v1 .
--	Step 3: Run the Container : docker run -p 8080:8080 --name dockerLayeredTutorial java-docker-layered:v1
+-	Step 1: Build the JAR using Gradle: `./gradlew clean bootJar`
+-	Step 3: Run the Container : `docker compose up --build`
