@@ -35,3 +35,9 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    // Custom name of the fat jar that will be built to build/libs/dockerDemo.jar
+    // This allows the Dockerfile to always look for "dockerDemo.jar" regardless of version.
+    archiveFileName = "dockerDemo.jar"
+}
