@@ -1,0 +1,41 @@
+version: "3.8"  # The version of the Compose file format
+
+services:       # The list of containers we want to run
+
+  # === SERVICE NAME: 'app' ===
+  # You can name this anything (backend, api, core).
+  # Docker will use this name for internal networking.
+  app:
+    # 1. CONTAINER IDENTITY
+    # We give it a specific name so we can find it easily (docker ps)
+    container_name: java-backend-core
+
+    # 2. THE BUILD SOURCE (Crucial for your Layered Dockerfile)
+    # context: .  -> Look for Dockerfile in the current folder
+    # dockerfile: Dockerfile -> Use the file named "Dockerfile"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # 3. PORT MAPPING
+    # Host Port : Container Port
+    # "Open port 8080 on my laptop and send traffic to port 8080 inside the container"
+    ports:
+      - "8080:8080"
+
+    # 4. ENVIRONMENT VARIABLES
+    # Inject configuration without changing the code
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+    # 5. NETWORKING
+    # Attach this container to a custom network
+    networks:
+      - app-network
+
+# === NETWORKS DEFINTION ===
+# We define a custom bridge network.
+# This isolates our app from other random containers on your laptop.
+networks:
+  app-network:
+    driver: bridge
