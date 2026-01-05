@@ -1,0 +1,50 @@
+services:
+  app:
+    # === STAGING SPECIFIC CONFIG ===
+    
+    # 1. Port Mapping:
+    # Usually mapped to port 80 or hidden behind a reverse proxy (Nginx).
+    ports:
+      - "80:8080"
+
+    # 2. Environment:
+    # 'staging' profile connects to a real RDS/Cloud DB (copy of prod data).
+    environment:
+      - SPRING_PROFILES_ACTIVE=staging
+    
+    # 3. Reliability (Simulation):
+    # We enable restarts to see if the app recovers from failures.
+    restart: always
+
+    # === SECURITY HARDENING (Bank-Grade) ===
+
+    # 1. Enforce Non-Root User
+    # Even if the Dockerfile forgets to switch users, this forces it.
+    user: springuser
+
+    # 2. Immutable Filesystem (The "Gotcha" Fix)
+    # read_only: true -> Prevents hackers from modifying ANY file in the container.
+    # tmpfs: /tmp     -> CRITICAL! Spring Boot needs a scratchpad. This gives it
+    #                    a writable folder in RAM, not on disk.
+    read_only: true
+    tmpfs:
+      - /tmp
+
+    # 3. Kernel Capability Dropping
+    # Docker containers have "root-like" powers by default (ping, chown, etc.).
+    # A web app needs NONE of these. We drop ALL powers.
+    cap_drop:
+      - ALL
+
+    # 4. Privilege Escalation Prevention
+    # Prevents a process from trying to 'sudo' or gain more rights than it started with.
+    security_opt:
+      - no-new-privileges:true
+
+    # 5. Resource Limits (Relaxed):
+    # Staging servers are usually smaller than Prod, so we set lower limits.
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'     # Half a core is enough for QA
+          memory: 512M

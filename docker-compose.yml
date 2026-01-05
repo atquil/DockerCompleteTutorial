@@ -1,41 +1,30 @@
-version: "3.8"  # The version of the Compose file format
-
-services:       # The list of containers we want to run
-
-  # === SERVICE NAME: 'app' ===
-  # You can name this anything (backend, api, core).
-  # Docker will use this name for internal networking.
+services:
   app:
-    # 1. CONTAINER IDENTITY
-    # We give it a specific name so we can find it easily (docker ps)
-    container_name: java-backend-core
+    # 1. Identity: Consistent naming across all environments
+    container_name: java-backend
 
-    # 2. THE BUILD SOURCE (Crucial for your Layered Dockerfile)
-    # context: .  -> Look for Dockerfile in the current folder
-    # dockerfile: Dockerfile -> Use the file named "Dockerfile"
+    # 2. Build Strategy: The Single Source of Truth
+    # We use the same 'Dockerfile' (Layered JLink) for Dev, Test, Staging, and Prod.
     build:
       context: .
       dockerfile: Dockerfile
 
-    # 3. PORT MAPPING
-    # Host Port : Container Port
-    # "Open port 8080 on my laptop and send traffic to port 8080 inside the container"
-    ports:
-      - "8080:8080"
+    # 3. Internal Networking:
+    # We expose port 8080 to other containers (like a DB),
+    # but we DO NOT map it to the host machine here.
+    expose:
+      - "8080"
 
-    # 4. ENVIRONMENT VARIABLES
-    # Inject configuration without changing the code
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-
-    # 5. NETWORKING
-    # Attach this container to a custom network
+    # 4. Common: Always on this network
     networks:
       - app-network
 
-# === NETWORKS DEFINTION ===
-# We define a custom bridge network.
-# This isolates our app from other random containers on your laptop.
+    # 5. Shared Config:
+    # Basic environment variables common to all (e.g., App Name, Timezone)
+    environment:
+      - APP_NAME=DockerCompleteTutorial
+      - TZ=UTC
+
 networks:
   app-network:
     driver: bridge

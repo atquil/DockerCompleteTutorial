@@ -1,0 +1,16 @@
+# Ignore build outputs
+target/
+build/
+*.jar
+*.war
+
+# Ignore IDE/project files
+*.iml
+.idea/
+
+# Ignore VCS
+.git/
+
+# Ignore Docker-related files (to avoid copying them into the image)
+Dockerfile*
+docker-compose*
