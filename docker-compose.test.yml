@@ -1,0 +1,22 @@
+services:
+  app:
+    # === TEST SPECIFIC CONFIG ===
+    
+    # 1. Networking:
+    # In CI, we often don't need port mapping (tests run inside the docker network),
+    # but mapping it allows external tools (Selenium/Postman) to hit the app.
+    ports:
+      - "8081:8080" # Use a different port to avoid conflict with running Dev instances
+
+    # 2. Environment:
+    # 'test' profile might use an H2 in-memory DB instead of Postgres for speed.
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+    
+    # 3. Healthcheck (Crucial for CI):
+    # The CI pipeline needs to know exactly when the app is ready to accept tests.
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/actuator/health || exit 1"]
+      interval: 5s   # Check fast
+      timeout: 3s
+      retries: 10    # Give it 50 seconds max to start

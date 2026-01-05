@@ -1,0 +1,21 @@
+services:
+  app:
+    # === DEV SPECIFIC CONFIG ===
+
+    # 1. Port Mapping:
+    # We map ports to localhost so you can access APIs and Debuggers.
+    ports:
+      - "8080:8080"  # App URL
+      - "5005:5005"  # Remote Debugging Port (JDWP)
+
+    # 2. Environment:
+    # Set profile to 'dev' to enable verbose logging in Spring Boot.
+    # Enable the Java Debug Agent.
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+    # 3. Restart Policy:
+    # "no" -> If the app crashes, stop the container.
+    # We want to see the stack trace in the terminal immediately, not an infinite restart loop.
+    restart: "no"
