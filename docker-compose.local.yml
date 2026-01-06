@@ -1,0 +1,58 @@
+services:
+  # Local DEVELOPMENT DATABASE ONLY - Ephemeral, seeded with test data
+  postgres-local:
+    image: postgres:15-alpine
+    container_name: local-dev-postgres
+    environment:
+      POSTGRES_USER: myuser          # DB user created at container startup
+      POSTGRES_PASSWORD: mypassword  # Password for that user
+      POSTGRES_DB: mydb              # Database name created automatically
+    ports:
+      - "5432:5432"                  # Host port 5432 -> container port 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Named volume 'pgdata' persists data even if the container is removed.
+      # Run the sql queries defined in the folder so that we have all the table and initial data if required)
+      - ./src/main/resources/db:/docker-entrypoint-initdb.d
+    # Important: We tell the local DB to join the Base Network so that they can talk(present in docker.compose.yml)
+    networks:
+      - app-network
+
+    healthcheck:
+      # 'pg_isready' checks if Postgres is accepting connections.
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 5s   # Run health check every 5 seconds
+      timeout: 3s    # Fail if check takes more than 3 seconds
+      retries: 20    # Mark container as unhealthy only after 20 failures
+
+  app:
+    # === DEV SPECIFIC CONFIG ===
+
+    # 1. Port Mapping:
+    # We map ports to localhost so you can access APIs and Debuggers.
+    ports:
+      - "8080:8080"  # App URL
+      - "5005:5005"  # Remote Debugging Port (JDWP)
+    depends_on:
+      postgres-local:
+        condition: service_healthy
+    # 2. Environment:
+    # Set profile to 'dev' to enable verbose logging in Spring Boot.
+    # Enable the Java Debug Agent.
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+      # OVERRIDE: Point to the Docker container hostname 'postgres-local' instead of 'localhost'
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-local:5432/mydb
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=mypassword
+
+
+    # 3. Restart Policy:
+    # "no" -> If the app crashes, stop the container.
+    # We want to see the stack trace in the terminal immediately, not an infinite restart loop.
+    restart: "no"
+
+# Named volume declaration. Docker manages its location.
+volumes:
+  pgdata:

@@ -1,0 +1,7 @@
+-- Create the CUSTOMER table if it doesn't exist
+CREATE TABLE IF NOT EXISTS CUSTOMER (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );

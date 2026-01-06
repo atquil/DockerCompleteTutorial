@@ -1,0 +1,27 @@
+# -------------------------------------------------------------------
+# NOTE:
+# All datasource and JPA properties below use Spring Boot's placeholder syntax:
+#   ${ENV_VAR:default}
+# Meaning:
+#   - A default value is hardcoded here for local development.
+#   - In Docker Compose (e.g. docker-compose.dev.yml) or Azure,
+#     environment variables override these defaults automatically.
+# This keeps the app portable across local dev, Docker, and cloud.
+# -------------------------------------------------------------------
+
+spring:
+  config:
+    activate:
+      on-profile: "default"
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
