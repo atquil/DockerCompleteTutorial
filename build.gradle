@@ -25,12 +25,23 @@ repositories {
 }
 
 dependencies {
+    // Core Web Application (Spring Boot 3.x+ uses webmvc explicitly)
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+
+    // Lombok for cleaner code (no getters/setters/constructors manually)
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // Database Configuration (JPA + PostgreSQL)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Testing Setup
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    // JUnit Platform Launcher for running tests
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

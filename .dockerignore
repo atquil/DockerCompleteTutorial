@@ -1,6 +1,5 @@
 # Ignore build outputs
 target/
-build/
 *.jar
 *.war
 

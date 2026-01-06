@@ -40,4 +40,23 @@ Steps to run Fat Jar
 
 ## Phase 3 : Orchestration with Docker Compose
 -	Step 1: Build the JAR using Gradle: `./gradlew clean bootJar`
--	Step 3: Run the Container : `docker compose up --build`
+-	Step 2: Run the Container : `docker compose up --build`
+
+## Phase 4: Run the Docker with DataLayer Integration and with local postgress
+- Step 1: Build the JAR using Gradle: `./gradlew clean bootJar`
+- Container Commands: 
+  - Scenario 1: Start the container   : 
+  ```
+  docker compose -f docker-compose.yml -f docker-compose.local.yml up –build
+  ```
+
+
+- Scenerio 2: The '-d' stands for Detached (Run in background)
+  ```
+  docker compose -f docker-compose.yml -f docker-compose.local.yml up -d –build
+  ```
+
+-	Scenario 3: The "Reset" (Wiping Data)
+  ```
+  docker compose -f docker-compose.yml -f docker-compose.local.yml down -v
+  ```

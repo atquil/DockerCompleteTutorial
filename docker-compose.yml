@@ -15,7 +15,7 @@ services:
     expose:
       - "8080"
 
-    # 4. Common: Always on this network
+    # 4. Common: Always on this network be it locally or in prod
     networks:
       - app-network
 
@@ -25,6 +25,8 @@ services:
       - APP_NAME=DockerCompleteTutorial
       - TZ=UTC
 
+# We define the network here so it exists for everyone
 networks:
   app-network:
     driver: bridge
+
