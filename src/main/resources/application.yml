@@ -25,3 +25,10 @@ spring:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
     show-sql: ${SPRING_JPA_SHOW_SQL:true}
     database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
+
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s # Give existing requests 30s to finish
+
+server:
+  shutdown: graceful # Don't just kill connections; let them finish!
