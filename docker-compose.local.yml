@@ -8,7 +8,9 @@ services:
       POSTGRES_PASSWORD: mypassword  # Password for that user
       POSTGRES_DB: mydb              # Database name created automatically
     ports:
-      - "5432:5432"                  # Host port 5432 -> container port 5432
+    # - "5432:5432"                  # Exposes PostgreSQL to all interfaces (0.0.0.0), accessible from any host on the network
+     - "127.0.0.1:5432:5432"        # Restricts PostgreSQL access to localhost only — ideal for local development and security
+
     volumes:
       - pgdata:/var/lib/postgresql/data # Named volume 'pgdata' persists data even if the container is removed.
       # Run the sql queries defined in the folder so that we have all the table and initial data if required)
